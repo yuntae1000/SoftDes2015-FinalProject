@@ -2,10 +2,11 @@ import urllib2
 from pattern.web import *
 
 class parse:
-	def __init__(self, url):
-		self.url = url
+	def __init__(self):
+		pass
 
 	def allrecipes(self, url):
+
 		recipe = []
 		html = urllib2.urlopen(url).read()
 		a = html.split("""<li class="step" ng-class="{'finished': stepIsActive0}" ng-click="stepIsActive0 = !stepIsActive0"><span class="recipe-directions__list--item">""")
@@ -36,7 +37,7 @@ class parse:
 		return recipe
 		
 	def epicurious(self, url):
-		u = urllib2.urlopen(self.url)
+		u = urllib2.urlopen(url)
 		u = u.read()
 		u = plaintext(u)
 		recipe = u.split('\n')
@@ -45,15 +46,17 @@ class parse:
 			text = recipe[num]
 			recipe[num] = text.encode('ascii','ignore')
 			num = num + 1
+		print recipe
 		cutting_num1 = recipe.index('Preparation')+3
 		cutting_num2 = recipe.index('Exclusive Offers') - 1
 		recipe = recipe[cutting_num1:cutting_num2]
 		recipe = [x for x in recipe if x != '']
 		recipe = [x for x in recipe if x != '*']
+		print "printing recipe", recipe
 		return recipe
 
 	def bonappetit(self, url):
-		u = urllib2.urlopen(self.url)
+		u = urllib2.urlopen(url)
 		u = u.read()
 		u = plaintext(u)
 		recipe = u.split('\n')
@@ -70,19 +73,22 @@ class parse:
 		return recipe
 
 	def	recipe(self, url):
-		if self.url[11] == 'a':
-			parse.allrecipes(url)
-		if self.url[11] == 'c':	
-			parse.closetcooking(url)
-		if self.url[11] == 'e':
-			parse.epicurious(url)
-		if self.url[11] == 'b':
-			parse.bonappetit(url)
+		if url[11] == 'a':
+			recipe = self.allrecipes(url)
+		if url[11] == 'c':	
+			recipe = self.closetcooking(url)
+		if url[11] == 'e':
+			recipe = self.epicurious(url)
+			print "epicurious"
+		if url[11] == 'b':
+			recipe = self.bonappetit(url)
+		return recipe
 		
-url = 'http://www.bonappetit.com/recipe/pan-roasted-chicken-with-pineapple-chile-glaze'
-parse = parse(url)
+url = 'http://www.epicurious.com/recipes/food/views/Bibimbap-at-Home-51140460'
+Parse = parse()
 #in_put = parse('http://www.bonappetit.com/recipe/pan-roasted-chicken-with-pineapple-chile-glaze')
-print parse.recipe(url)
+recipe= Parse.recipe(url)
+print recipe
 
 #in_put = 'http://www.bonappetit.com/recipe/pan-roasted-chicken-with-pineapple-chile-glaze'
 #print parse.recipe('http://www.bonappetit.com/recipe/pan-roasted-chicken-with-pineapple-chile-glaze')		
