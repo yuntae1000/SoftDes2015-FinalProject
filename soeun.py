@@ -4,7 +4,13 @@ from pattern.web import *
 reload(sys)
 sys.setdefaultencoding('utf8')
 
+
 def iherb_search(ingredient):
+    """
+    input = str(ingredienet)
+    output = [ [ingredient, amount, unit, price] * 3 ]
+    """
+
     iherb_ingredient = ingredient.replace(" ","+")
     iherb_url = 'http://www.iherb.com/search?kw='+iherb_ingredient+'#p=1'
     iherb_html = URL(iherb_url).download()
@@ -28,11 +34,11 @@ def iherb_search(ingredient):
         if i%3 == 0 or i%3 == 2:
             ing_list.append(c[i])
 
+    # ing_list = [ 'name, amount, unit', 'price' ]
     
     ingredient_list = []
 
-
-    for i in range(3):
+    for i in range(3): # put only 3 items in the list
         x=[]
         a = ing_list[2*i].split(',')
         b = len(a)
@@ -41,21 +47,26 @@ def iherb_search(ingredient):
         name = ''
         for j in range(len(a)):
             name += a[j]
-        x.append(name.lower())
+        x.append(name.lower()) # name
         b = amount.split(' ')
-        x.append(b[1])
-        x.append(b[2].lower())
-        x.append(ing_list[2*i+1].lower())
+        x.append(b[1]) # amount
+        x.append(b[2].lower()) # unit
+        x.append(ing_list[2*i+1].lower()) # price
         ingredient_list.append(x)
 
     return ingredient_list
 
-    # result = [ingredient, amount, unit, price] * 3
+
 
 
 
 
 def walmart_search(ingredient):
+    """
+    input = str(ingredienet)
+    output = [ [ingredient, amount, unit, price] * 3 ]
+    """
+
     walmart_ingredient = ingredient.replace(" ","%20")
     walmart_url = 'http://www.walmart.com/search/?query='+walmart_ingredient    
     walmart = []
@@ -63,7 +74,6 @@ def walmart_search(ingredient):
     walmart_html = urllib2.urlopen(walmart_url).read()
     walmart_text = plaintext(walmart_html)
     
-
     a = walmart_text.split('Sort Best match Best sellers Price: low to high Price: high to low Highest rating New')
     b = a[1].split('\n')
     
@@ -80,25 +90,34 @@ def walmart_search(ingredient):
         else:
             walmart.append(b[i])
     
+    # walmart = [ 'name,amount,unit','price' ]
+
     ingredient_list = []
 
     for i in range(3):
         x = []
         a = walmart[2*i].split(',')
-        x.append(a[0].lower())
+        x.append(a[0].lower()) # name 
         b = a[1].split(' ')
-        x.append(b[1].lower())
-        x.append(b[2].lower())
-        x.append(walmart[2*i+1].lower())
+        x.append(b[1].lower()) # amount
+        x.append(b[2].lower()) # unit
+        x.append(walmart[2*i+1].lower()) # price
         ingredient_list.append(x)
 
 
     return ingredient_list
-    # result = [[ingredient, amount, unit, price]*3]
+   
+
+
 
 
 
 def produce_search(ingredient):
+    """
+    input = str(ingredienet)
+    output = [ [ingredient, amount, unit, price] * 3 ]
+    """
+
     produce_url = 'http://www.foodcoop.com/produce'
     produce_html = urllib2.urlopen(produce_url).read()
     produce_text = plaintext(produce_html)
@@ -164,7 +183,13 @@ def produce_search(ingredient):
 
 
 
+
 def unify_units(ingredient_list):
+    """
+    input = [ [ingredient, amount, unit, price] * 3 ]
+    output = [ [ingredient, unified_amount, unified_unit, price] * 3 ]
+    """
+
     unit = ['cup','tablespoon','teaspoon','pound','lb']
     unify = [80, 0.5, 0.25, 16, 16, 0.03, 0.03]
 
@@ -187,6 +212,12 @@ def unify_units(ingredient_list):
 
 
 def unify_recipe_unit(recipe_amount, recipe_unit):
+    """
+    recipe_amount = [amount1, amount2, amount3, ...]
+    recipe_unit = [unit1, unit2, unit3, ...]
+    output = [ [unified_amount1, unified_amount2,...],[unified_unit1, unified_unit2, ...] ]
+    """
+
     unit = ['oz','ounce''cup','tablespoon','teaspoon','pound','lb']
     unify = [1, 1, 80, 0.5, 0.25, 16, 16, 0.03, 0.03]
     for i in range(len(recipe_unit)):
@@ -200,7 +231,14 @@ def unify_recipe_unit(recipe_amount, recipe_unit):
 
 
 
-def compare_amount(ingredient_list, recipe_amount, recipe_unit, recipe_name):
+def compare_amount(ingredient_list, recipe_amount, recipe_unit):
+    """
+    ingredient_list = [ [ingredient, amount, unit, price] * 3 ]
+    recipe_amount = string
+    recipe_unit = string
+    output = final one [[ingredient, amount, unit, price]]
+    """
+
     a = [ingredient_list[0][3],ingredient_list[1][3],ingredient_list[2][3]]
     b = a.sort()
     c = []
@@ -233,28 +271,77 @@ def compare_amount(ingredient_list, recipe_amount, recipe_unit, recipe_name):
 
 
 
-def ingredients_search(ingredient, amount):
-    walmart_prices = [walmart_search(ingredient)[0][3],walmart_search(ingredient)[1][3],walmart_search(ingredient)[2][3]]
+def ingredients_search(walmart, iherb, produce):
+    """
+    walmart = 3 lists
+    iherb = 3 lists
+    produce = 3 lists
+    output = one of the results from walmart, iherb, produce
+    """
+
+    walmart_prices = [walmart[0][3],walmart[1][3],walmart[2][3]]
     a = walmart_prices.sort()
-    iherb_prices = [iherb_search(ingredient)[0][3],iherb_search(ingredient)[1][3],iherb_search(ingredient)[2][3]]
-    if len(produce_search(ingredient)) != 0:
-        return produce_search(ingredient_list)
+    iherb_prices = [iherb[0][3],iherb[1][3],iherb[2][3]]
+
+    if len(produce) != 0:
+        return produce
     elif 'In stores only' not in walmart_prices:
-        return walmart_search(ingredient)
+        return walmart
     elif a[2] == 'In stores only' and a[1] != 'In stores only':
-        return walmart_search(ingredient)
+        return walmart
     elif min(a[0],iherb_prices[0],iherb_prices[1],iherb_prices[2]) in a :
-        return walmart_search(ingredient)
+        return walmart
     elif min(a[0],iherb_prices[0],iherb_prices[1],iherb_prices[2]) in iherb_prices :
-        return iherb_search(ingredient)
+        return iherb
 
 
 
 
+def refine_name(ingredient):
+    """
+    input = [ingredient1, ingredient2, ingredient3, ...]
+    output = [refined_name1, refined_name2, refined_name3, ...]
+    """
+    for i in range(len(ingredient)):
+        a = ingredient[i].find('or')
+        if a != -1:
+            ingredient[i] = ingredient[i][:a-1]
 
-#ingredients_search('butter')
-print produce_search('carrot')
-print iherb_search('black pepper')
-print walmart_search('butter')
+        b = ingredient[i].find('(')
+        c = ingredient[i].find(')')
+        if b != -1:
+            ingredient[i] = ingredient[i][:a-1] + ingredient[i][b+1:]
+
+        d = ingredient[i].find(',')
+        if d != -1:
+            ingredient[i] = ingredient[i][:d]
+
+
+
+
+def main(name_list, amount_list, unit_list, price_list):
+    names = refine_name(name_list)
+    amounts = unify_recipe_unit(amount_list, unit_list)[0]
+    units = unify_recipe_unit(amount_list, unit_list)[1]
+
+    for i in range(len(names)):
+        name = names[i]
+        amount = amounts[i]
+        unit = units[i]
+        price = price_list[i]
+
+        walmart = walmart_search(name)
+        iherb = iherb_search(name)
+        produce = produce_search(name)
+
+        pre_item_list = ingredients_search(walmart, iherb, produce)
+        item_list = unify_units(pre_item_list)
+        final = compare_amount(item_list,amount,unit)
+
+        return final
+
+
+
+
 
 
