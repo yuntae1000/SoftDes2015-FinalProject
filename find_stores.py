@@ -28,19 +28,25 @@ class find_stores():
 		my_key = self.my_key
 		response2 = urllib2.urlopen('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='+a+','+b+'&radius='+c+'&types=grocery_or_supermarket&key='+my_key).read()
 		response2 = json.loads(response2)
-		return response2
+		response2 = response2['results']
+		datalist = dict()
+		for i in range(len(response2)):
+			datalist[response2[i]['name']] = response2[i]['geometry']['location']['lat'], response2[i]['geometry']['location']['lng']
+		
+        """ADD DB PART HERE- Extracting the Stores"""
 
-		#ADD DB - Extracting the Stores
-		#Give me the data; name, location(lat, lng), opening hours
-	"""
-	def near_you(self):
+		return datalist
+
+
+	"""def near_you(self):
 		location = self.get_lacation(self.origin)
 		a = str(location[0])
 		b = str(location[1])
+		stores = search_stores(self.radius)
 		c = destination1|destination2
 		response3 = urllib2.urlopen('https://maps.googleapis.com/maps/api/distancematrix/json?origins='+a+','+b+'&destinations='+c+'&key='+my_key).read()
-		response3 = fson.loads(response3)
-	"""
+		response3 = json.loads(response3)"""
+
 
 a = find_stores('AIzaSyDJm9wnT8bVC1nxJ61OKwcMdkwDpxakcWg')
 b = a.get_location('4 Charles St, Boston, MA')
