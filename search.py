@@ -3,9 +3,11 @@ import json
 import html2text
 import string
 API= "330d2c5996a36203ad2247c1e705b4bb"
-searchdish = "kimchi"
+searchdish = "pizza"
 response = urllib2.urlopen('http://food2fork.com/api/search?key='+API+'&q='+searchdish).read()
+
 jsondata=json.loads(response)
+print jsondata
 websites=[u'Closet Cooking',u'All Recipes',u'Epicurious']
 recipe_lists=[]
 f2furl_ingredients=[]
