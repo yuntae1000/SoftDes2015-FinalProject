@@ -33,22 +33,32 @@ class find_stores():
 		for i in range(len(response2)):
 			datalist[response2[i]['name']] = response2[i]['geometry']['location']['lat'], response2[i]['geometry']['location']['lng']
 		
-        """ADD DB PART HERE- Extracting the Stores"""
+        #ADD DB PART HERE- Extracting the Stores
 
 		return datalist
 
-
-	"""def near_you(self):
-		location = self.get_lacation(self.origin)
+	def near_you(self):
+		my_key = self.my_key
+		location = self.get_location(self.origin)
 		a = str(location[0])
 		b = str(location[1])
-		stores = search_stores(self.radius)
-		c = destination1|destination2
+		stores = self.search_stores(self.radius)
+		name_list = stores.keys()
+		location_list = stores.values()
+		for i in range(len(location_list)):
+			location_list[i] = str(location_list[i][0]) + ',' + str(location_list[i][1])
+		c = '|'.join(location_list)
 		response3 = urllib2.urlopen('https://maps.googleapis.com/maps/api/distancematrix/json?origins='+a+','+b+'&destinations='+c+'&key='+my_key).read()
-		response3 = json.loads(response3)"""
-
+		response3 = json.loads(response3)
+		response3 = response3['rows'][0]['elements']
+		datalist = {}
+		for i in range(len(response3)):
+			datalist[name_list[i]] = response3[i]['distance']['text'], response3[i]['duration']['text']
+		return datalist
 
 a = find_stores('AIzaSyDJm9wnT8bVC1nxJ61OKwcMdkwDpxakcWg')
 b = a.get_location('4 Charles St, Boston, MA')
-c = a.search_stores(1000)
+c = a.search_stores(500)
+d = a.near_you()
 print c
+print d
