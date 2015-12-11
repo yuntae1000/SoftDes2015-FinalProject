@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Jangbogo - Cook Smart Software Design Final Project</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  	<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+</head>
+<header>
+	<div class="navbar-header">
+	    <a class="navbar-brand" rel="home" href="/" title="Jangbogo-Cooksmart">
+	        <img class="img-responsive" style="width:40px; height;40px; margin-top: -5px;" src="/static/images/mainlogo.png">
+	    </a>
+	    
+  	</div>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-xs-12 col-sm-6 col-md-8">.col-xs-12 .col-sm-6 .col-md-8</div>
+  		  	<div class="col-xs-6 col-md-4">.col-xs-6 .col-md-4</div>
+		</div>
+		<!-- <h5 align="center" style="width=300px"> Jangbogo - Cooksmart</h5>
+ -->		<div class="dropdown" align="right">
+		  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+		    Dropdown
+		    <span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+		    <li><a href="#">Action</a></li>
+		    <li><a href="#">Another action</a></li>
+		    <li><a href="#">Something else here</a></li>
+		    <li role="separator" class="divider"></li>
+		    <li><a href="#">Separated link</a></li>
+		  </ul>
+		</div>
+	</div>
+</header>
+
+<body>
+	<div class="container-fluid" align="center" style="min-height:100%">
+		{% block body %}{% endblock %}
+	</div>
+</body>
+</html>
