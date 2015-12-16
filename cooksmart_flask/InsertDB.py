@@ -5,7 +5,7 @@ import mysql.connector
 
 #list_grocery=soeun.main()
 list_grocery=[u'great value chunk chicken breast', u'Walmart', u'12.5', u'oz', u'$5.46']
-cnx = mysql.connector.connect(user='root', password='kaist0826',
+cnx = mysql.connector.connect(user='root', password='cooksmart',
                               host='localhost',
                               database='cooksmart')
 
