@@ -50,6 +50,7 @@ def iherb_search(ingredient):
             name += a[j]
         x.append(name.lower()) # name
         b = amount.split(' ')
+        print b
         x.append(b[1]) # amount
         x.append(b[2].lower()) # unit
         x.append(ing_list[2*i+1].lower()) # price
@@ -113,10 +114,6 @@ def walmart_search(ingredient):
 
     return ingredient_list
    
-
-
-
-
 
 def produce_search(ingredient):
     """
@@ -220,7 +217,7 @@ def unify_units(ingredient_list):
                 c = b.replace(' ','')
                 ingredient_list[i][1] = c
             elif unit[j] in ingredient_list[i][2]:
-                ingredient_list[i][1] = str(int(ingredient_list[i][1])*int(unify[j]))
+                ingredient_list[i][1] = str(float(ingredient_list[i][1])*float(unify[j]))
                 ingredient_list[i][2] = 'oz'
   
     return ingredient_list
@@ -341,8 +338,7 @@ def refine_name(ingredient):
         d = ingredient[i].find(',')
         if d != -1:
             ingredient[i] = ingredient[i][:d]
-
-        return ingredient
+    return ingredient
 
 
 
@@ -372,13 +368,13 @@ def main(name_list, amount_list, unit_list):
 
     return final
 
+amount_list = [0.16666666666666666, 0.08333333333333333, 0.25, 0.16666666666666666, 0.3333333333333333, 0.3333333333333333, 0.08333333333333333, 0.16666666666666666, 0.3333333333333333]
+unit_list = ['cup', 'cup', 'teaspoon', 'cup', 'teaspoon', 'cup', 'cup', 'cup', 'teaspoon']
+name_list = ['white sugar ', 'margarine, melted ', 'ground nutmeg ', 'milk ', 'baking powder ', 'all-purpose flour ', 'margarine, melted ', 'white sugar ', 'ground cinnamon ']
 
-name_list = ['onion','black pepper','tomato','bread']
-amount_list = [1,5,2,1]
-unit_list = ['oz','lb','oz','loaf']
+#name_list = ['white sugar','black pepper','egg','bread']
+#amount_list = [1,5,2,1]
+#unit_list = ['cup','lb','oz','loaf']
 print main(name_list, amount_list, unit_list)
 
 #things to do => refine produce information / mark amount
-
-
-
