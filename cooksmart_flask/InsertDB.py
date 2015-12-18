@@ -15,9 +15,9 @@ for i in range(len(list_grocery)):
 
 
 	add_grocery = ("INSERT INTO cache "
-	           "(product,brand, amount, unit, price) "
+	           "(product,amount, unit, price, brand, set_num) "
 	           "VALUES (%s, %s, %s, %s, %s)")
-	data_grocery= (db_grocery[0],db_grocery[1],db_grocery[2],db_grocery[3],db_grocery[4])
+	data_grocery= (db_grocery[0],db_grocery[1],db_grocery[2],db_grocery[3],db_grocery[4],db_grocery[5])
 
 	cursor.execute(add_grocery, data_grocery)
 	emp_no=cursor.lastrowid

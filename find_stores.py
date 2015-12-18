@@ -5,7 +5,8 @@ import string
 class find_stores():
 	def __init__(self, my_key):
 		self.my_key = my_key
-		my_key = 'AIzaSyDJm9wnT8bVC1nxJ61OKwcMdkwDpxakcWg'
+		#my_key = 'AIzaSyDJm9wnT8bVC1nxJ61OKwcMdkwDpxakcWg'
+		self.datalist2=[]
 		pass
 
 	def get_location(self, origin):
@@ -30,9 +31,11 @@ class find_stores():
 		response2 = json.loads(response2)
 		response2 = response2['results']
 		datalist = dict()
+		
 		for i in range(len(response2)):
 			datalist[response2[i]['name']] = response2[i]['geometry']['location']['lat'], response2[i]['geometry']['location']['lng']
-		
+			
+			self.datalist2.append(response2[i]['name'])
         #ADD DB PART HERE- Extracting the Stores
 
 		return datalist
@@ -57,8 +60,10 @@ class find_stores():
 		return datalist
 
 a = find_stores('AIzaSyDJm9wnT8bVC1nxJ61OKwcMdkwDpxakcWg')
-b = a.get_location('4 Charles St, Boston, MA')
-c = a.search_stores(500)
+b = a.get_location('Olin way, Boston, MA')
+c = a.search_stores(1800)
 d = a.near_you()
+
+print a.datalist2
 print c
 print d
