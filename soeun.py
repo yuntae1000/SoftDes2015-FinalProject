@@ -19,8 +19,12 @@ def iherb_search(ingredient):
 
     a = iherb_text.split('Relevance Best Selling Customer Rating Price: Low to High Price: High to Low On Sale New Arrivals Heaviest Lightest')
     b = a[1].split('\n')
-    del b[:4]
+    if 'Previous' in b[2]:
+        del b[:4]
+    else:
+        del b[:2]
     
+
     c=[]
     
     for i in range(len(b)):
@@ -34,6 +38,8 @@ def iherb_search(ingredient):
     for i in range(len(c)):
         if i%3 == 0 or i%3 == 2:
             ing_list.append(c[i])
+
+    #print c
 
     # ing_list = [ 'name, amount, unit', 'price' ]
     
@@ -50,14 +56,14 @@ def iherb_search(ingredient):
             name += a[j]
         x.append(name.lower()) # name
         b = amount.split(' ')
-        print b
+        
         x.append(b[1]) # amount
         x.append(b[2].lower()) # unit
         x.append(ing_list[2*i+1].lower()) # price
+        x.append('iherb')
         ingredient_list.append(x)
 
     return ingredient_list
-
 
 
 
@@ -79,13 +85,16 @@ def walmart_search(ingredient):
     a = walmart_text.split('Sort Best match Best sellers Price: low to high Price: high to low Highest rating New')
     b = a[1].split('\n')
     
+    
+    #print b
+    
 
     for i in range(len(b)):
         if b[i] == '':
             pass
         elif b[i][0] == '*':
             pass
-        elif '/' in b[i] or '(' in b[i]:
+        elif '/' in b[i] or 'rating' in b[i] or 'Rollback' in b[i] or 'Best Seller' in b[i]:
             pass
         elif b[i] == 'New':
             pass
@@ -104,11 +113,13 @@ def walmart_search(ingredient):
         a = walmart[2*i].split(',')
         x.append(a[0].lower()) # name 
         
+
         b = a[1].split(' ')
 
         x.append(b[1].lower()) # amount
         x.append(b[2].lower()) # unit
         x.append(walmart[2*i+1].lower()) # price
+        x.append('walmart')
         ingredient_list.append(x)
 
 
@@ -203,8 +214,8 @@ def unify_units(ingredient_list):
     output = [ [ingredient, unified_amount, unified_unit, price] * 3 ]
     """
 
-    unit = ['cup','tablespoon','teaspoon','pound','lb','g','gram']
-    unify = [80, 0.5, 0.25, 16, 16, 0.035, 0.035]
+    unit = ['oz','ounce','cup','tablespoon','teaspoon','pound','lb','g','gram']
+    unify = [1, 1, 80, 0.5, 0.25, 16, 16, 0.035, 0.035]
 
 
     for i in range(len(ingredient_list)):
@@ -232,8 +243,8 @@ def unify_recipe_unit(recipe_amount, recipe_unit):
     output = [ [unified_amount1, unified_amount2,...],[unified_unit1, unified_unit2, ...] ]
     """
 
-    unit = ['oz','ounce''cup','tablespoon','teaspoon','pound','lb']
-    unify = [1, 1, 80, 0.5, 0.25, 16, 16, 0.03, 0.03]
+    unit = ['oz','ounce','cup','tablespoon','teaspoon','pound','lb','g','gram']
+    unify = [1, 1, 80, 0.5, 0.25, 16, 16, 0.035, 0.035]
     for i in range(len(recipe_unit)):
         for j in range(len(unit)):
             if unit[j] in recipe_unit[i]:
@@ -256,31 +267,68 @@ def compare_amount(ingredient_list, recipe_amount, recipe_unit):
     a = [ingredient_list[0][3][1:],ingredient_list[1][3][1:],ingredient_list[2][3][1:]]
     
     a.sort()
+
+    
+
     c = []
     for j in range(3):
         for i in range(3):
             if ingredient_list[i][3][1:]==a[j]:
                 c.append(i)
     
+
     if recipe_unit == 'oz' and ingredient_list[c[0]][2] == 'oz':
         if recipe_amount < ingredient_list[c[0]][1] :
+            ingredient_list[c[0]].append(1)
             return ingredient_list[c[0]]
         elif ingredient_list[c[1]][3] == 'n stores only':
+            x = float(recipe_amount) / float(ingredient_list[c[0]][1])
+            if float(recipe_amount)%float(ingredient_list[c[0]][1]) == 0:
+                ingredient_list[c[0]].append(int(x))
+            else:
+                ingredient_list[c[0]].append(int(x)+1)
             return ingredient_list[c[0]]
         elif recipe_amount < ingredient_list[c[1]][1] and ingredient_list[c[1]][1] < recipe_amount*2 :
+            ingredient_list[c[1]].append(1)
             return ingredient_list[c[1]]
         elif ingredient_list[c[2]][3] == 'n stores only':
+            x = float(recipe_amount) / float(ingredient_list[c[1]][1])
+            if float(recipe_amount)%float(ingredient_list[c[1]][1]) == 0:
+                ingredient_list[c[1]].append(int(x))
+            else:
+                ingredient_list[c[1]].append(int(x)+1)
             return ingredient_list[c[1]]
         elif recipe_amount < ingredient_list[c[2]][1] and ingredient_list[c[2]][1] < recipe_amount*2 :
+            ingredient_list[c[2]].append(1)
             return ingredient_list[c[2]]
         elif recipe_amount < ingredient_list[c[2]][1] and ingredient_list[c[2]][1] > recipe_amount*2 :
+            x = float(recipe_amount) / float(ingredient_list[c[1]][1])
+            if float(recipe_amount)%float(ingredient_list[c[1]][1]) == 0:
+                ingredient_list[c[1]].append(int(x))
+            else:
+                ingredient_list[c[1]].append(int(x)+1)
             return ingredient_list[c[1]]
         elif recipe_amount > ingredient_list[c[2]][1] :
+            x = float(recipe_amount) / float(ingredient_list[c[2]][1])
+            if float(recipe_amount)%float(ingredient_list[c[2]][1]) == 0:
+                ingredient_list[c[2]].append(int(x))
+            else:
+                ingredient_list[c[2]].append(int(x)+1)
             return ingredient_list[c[2]]
         else:
+            x = float(recipe_amount) / float(ingredient_list[c[0]][1])
+            if float(recipe_amount)%float(ingredient_list[c[0]][1]) == 0:
+                ingredient_list[c[0]].append(int(x))
+            else:
+                ingredient_list[c[0]].append(int(x)+1)
             return ingredient_list[c[0]] # mark the number
 
     else:
+        x = float(recipe_amount) / float(ingredient_list[c[0]][1])
+        if float(recipe_amount)%float(ingredient_list[c[0]][1]) == 0:
+            ingredient_list[c[0]].append(int(x))
+        else:
+            ingredient_list[c[0]].append(int(x)+1)
         return ingredient_list[c[0]] # mark the number
         
 
@@ -300,22 +348,27 @@ def ingredients_search(ingredient):
         return produce
 
     walmart = walmart_search(ingredient)
-    iherb = iherb_search(ingredient)
+    
 
     walmart_prices = [walmart[0][3][1:],walmart[1][3][1:],walmart[2][3][1:]]
     walmart_prices.sort()
-    iherb_prices = [iherb[0][3][1:],iherb[1][3][1:],iherb[2][3][1:]]
     
-
+    
 
     if 'n stores only' not in walmart_prices:
         return walmart
     elif walmart_prices[2] == 'n stores only' and walmart_prices[1] != 'n stores only':
         return walmart
-    elif min(walmart_prices[0],iherb_prices[0],iherb_prices[1],iherb_prices[2]) in walmart_prices :
+    elif walmart_prices[2] == 'n stores only' and walmart_prices[1] == 'n stores only' and walmart_prices[0] != 'n stores only':
         return walmart
-    elif min(walmart_prices[0],iherb_prices[0],iherb_prices[1],iherb_prices[2]) in iherb_prices :
-        return iherb
+
+
+    iherb = iherb_search(ingredient)
+    iherb_prices = [iherb[0][3][1:],iherb[1][3][1:],iherb[2][3][1:]]
+
+    return iherb
+
+
 
 
 
@@ -359,10 +412,12 @@ def main(name_list, amount_list, unit_list):
         item_list = unify_units(pre_item_list)
 
         if len(item_list) == 1:
+            item_list.append('catalog')
             final.append(item_list)
             
         if len(item_list) == 3:
             final_item = compare_amount(item_list,amount,unit)
+            final_item.append
             final.append(final_item)
             
 
@@ -370,7 +425,7 @@ def main(name_list, amount_list, unit_list):
 
 amount_list = [0.16666666666666666, 0.08333333333333333, 0.25, 0.16666666666666666, 0.3333333333333333, 0.3333333333333333, 0.08333333333333333, 0.16666666666666666, 0.3333333333333333]
 unit_list = ['cup', 'cup', 'teaspoon', 'cup', 'teaspoon', 'cup', 'cup', 'cup', 'teaspoon']
-name_list = ['white sugar ', 'margarine, melted ', 'ground nutmeg ', 'milk ', 'baking powder ', 'all-purpose flour ', 'margarine, melted ', 'white sugar ', 'ground cinnamon ']
+name_list = ['coffee ', 'margarine, melted ', 'ground nutmeg ', 'milk ', 'baking powder ', 'all-purpose flour ', 'margarine, melted ', 'white sugar ', 'ground cinnamon ']
 
 #name_list = ['white sugar','black pepper','egg','bread']
 #amount_list = [1,5,2,1]
