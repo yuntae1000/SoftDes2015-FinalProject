@@ -1,14 +1,19 @@
 from flask import Flask, render_template, json, request
 from flaskext.mysql import MySQL
+import operator
 from werkzeug import generate_password_hash, check_password_hash
+from merge1 import *
+from find_stores import *
+from soeun import main
+
+
 
 USER_DICT = {"Basics":[["Introduction to Python","/introduction-to-python-programming/"],
                             ["Print functions and Strings","/python-tutorial-print-function-strings/"],
                             ["Math basics with Python 3","/math-basics-python-3-beginner-tutorial/"]],
                   "Web Dev":[]}
-user_name = "jong"
+user_name = "Amon"
 
-SEARCH_DICT = [1,2,3,4,5,6]
 mysql = MySQL()
 app = Flask(__name__)
 
@@ -18,6 +23,7 @@ app.config['MYSQL_DATABASE_PASSWORD'] = 'cooksmart'
 app.config['MYSQL_DATABASE_DB'] = 'cooksmart'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
+
 
 @app.route('/',methods=['POST','GET'])
 def homepage():
@@ -77,15 +83,43 @@ def Authenticate():
 @app.route('/search',methods=['POST','GET'])
 def searchresult():
     searchquery = request.form['searchquery']
-    if len(SEARCH_DICT)==0:
-        return render_template("noresult.html", searchquery=searchquery, SEARCH_DICT = SEARCH_DICT, user_name = user_name)
+    f2fork = food2fork(searchquery)
+    url = f2fork.getRecipeurl()
+    for i in range(len(f2fork.f2furl_ingredients)):
+        f2fork.getIngredients(i)
+    try:
+        final_ingre = f2fork.ingredients_lists[0]
+        final_ingre = final_ingre[0]
+        Parse = parse()
+        recipe= Parse.recipe(url)
+        dishname = Parse.dishname(url)
+        SEARCH_DICT=[{"dishname":dishname,"url":url,"recipe":recipe,"ingre":final_ingre},{"dishname":dishname,"url":url,"recipe":recipe,"ingre":final_ingre},{"dishname":dishname,"url":url,"recipe":recipe,"ingre":final_ingre},{"dishname":dishname,"url":url,"recipe":recipe,"ingre":final_ingre},{"dishname":dishname,"url":url,"recipe":recipe,"ingre":final_ingre},{"dishname":dishname,"url":url,"recipe":recipe,"ingre":final_ingre}]
+        global sdict
+        sdict=SEARCH_DICT
+    except IndexError:
+        return render_template("noresult.html")
     return render_template("searchresult.html", searchquery=searchquery, SEARCH_DICT = SEARCH_DICT, user_name = user_name)
 
 @app.route('/computecost',methods=['POST','GET'])
 def computecost():
     nofserving = request.form['nofserving']
     selectedresult = request.form['selectedresult']
-    return render_template("computecost.html", USER_DICT=USER_DICT,nofserving=nofserving,selectedresult=selectedresult)
+    findstore=find_stores()
+    findstore.get_location('Olin way, Boston, MA')
+    findstore.search_stores(1800)
+    STORE_DICT = findstore.near_you()
+    STORE_LIST = sorted(STORE_DICT.items(),key=operator.itemgetter(1))
+
+
+    costcnvt=ready_for_cost()
+    final_ingre=sdict[selectedresult]["ingre"]
+    list_amount = costcnvt.amount(final_ingre)
+    list_unit = costcnvt.unit(final_ingre)
+    list_name = costcnvt.name(final_ingre)
+
+
+
+    return render_template("computecost.html", USER_DICT=USER_DICT,nofserving=nofserving,selectedresult=selectedresult,STORE_LIST=STORE_LIST)
 
 @app.route('/computecost2/',methods=['POST','GET'])
 def computecost2():

@@ -1,7 +1,6 @@
 {% extends "header.html" %}
 
 {% block body %}
-<script type="text/javascript" src="{{ url_for('static', filename='js/computecost.js') }}"></script>
 <div id ="aaa"> 
 <h3> {{ selectedresult }} / {{ nofserving }} </h3>
 </div>
@@ -38,11 +37,13 @@
 			    	<td> Distance </td>
 			    	<td> Travel Time (Car) </td>
 			    </tr>
+			    {% for store in STORE_LIST %}
 			    <tr>
-			    	<td>a</td>
-			    	<td>b</td>
-			    	<td>c</td>
+			    	<td>{{store[0]}}</td>
+			    	<td>{{store[1][0]}}</td>
+			    	<td>{{store[1][1]}}</td>
 			    </tr>
+			    {% endfor %}
 			  </table>
 		</div>
     </div>

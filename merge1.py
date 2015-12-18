@@ -9,37 +9,38 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 socket.timeout
 
+class food2fork:
 
-API= "330d2c5996a36203ad2247c1e705b4bb"
-#User Input the Value
-searchdish = "donut"
+	def __init__(self,searchdish):
 
-response = urllib2.urlopen('http://food2fork.com/api/search?key='+API+'&q='+searchdish).read()
-jsondata=json.loads(response)
-websites=[u'Closet Cooking',u'All Recipes',u'Epicurious', u'Bon Appetit']
-recipe_lists=[]
-f2furl_ingredients=[]
-ingredients_lists=[]
+		self.API= "330d2c5996a36203ad2247c1e705b4bb"
+		#User Input the Value
+		self.searchdish = searchdish
+		self.response = urllib2.urlopen('http://food2fork.com/api/search?key='+API+'&q='+searchdish).read()
+		self.jsondata=json.loads(response)
+		self.websites=[u'Closet Cooking',u'All Recipes',u'Epicurious', u'Bon Appetit']
+		self.ingredients_lists=[]
+		self.f2furl_ingredients=[]
+		self.recipe_lists=[]
 
+	def getRecipeurl(self):		
+		for urls in filter(lambda x: x[u'publisher'] in self.websites, self.jsondata[u'recipes']):
+			self.recipe_lists.append(urls)
+			#to get ingredients from f2f urls, get the f2f urls in lists
+			self.f2furl_ingredients.append(str(urls[u'f2f_url']))
+			uurl = self.recipe_lists[0]['source_url']
+			if uurl[7] == 'a':
+				uurl = uurl[:7] + 'www.' + uurl[7:]
+			return uurl
 
-def getRecipeurl():
-	for urls in filter(lambda x: x[u'publisher'] in websites, jsondata[u'recipes']):
-		recipe_lists.append(urls)
-		#to get ingredients from f2f urls, get the f2f urls in lists
-		f2furl_ingredients.append(str(urls[u'f2f_url']))
-		uurl = recipe_lists[0]['source_url']
-		if uurl[7] == 'a':
-			uurl = uurl[:7] + 'www.' + uurl[7:]
-		return uurl
-
-def getIngredients(index):
-	response2=urllib2.urlopen(f2furl_ingredients[index]).read()
-	html=html2text.html2text(response2)
-	#print html
-	a=string.find(html,'#### Ingredients')
-	b=string.find(html,'#### Directions')
-	ingredient=html[a:b-1]
-	ingredients_lists.append([ingredient])
+	def getIngredients(index):
+		response2=urllib2.urlopen(self.f2furl_ingredients[index]).read()
+		html=html2text.html2text(response2)
+		#print html
+		a=string.find(html,'#### Ingredients')
+		b=string.find(html,'#### Directions')
+		ingredient=html[a:b-1]
+		self.ingredients_lists.append([ingredient])
 
 class parse:
 	def __init__(self):
@@ -248,6 +249,7 @@ class ready_for_cost():
 					name_list.append(naming)
 		name_list = [x for x in name_list if x != '']
 		return name_list
+
 
 used_url = getRecipeurl()
 for i in range(len(f2furl_ingredients)):
