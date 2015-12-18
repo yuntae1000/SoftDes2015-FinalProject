@@ -8,36 +8,56 @@
 	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   	<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+  	<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+  	<script type="text/javascript" src="{{ url_for('static', filename='js/search.js') }}"></script>
+  	<script type="text/javascript" src="{{ url_for('static', filename='js/computecost.js') }}"></script>
+  	
 </head>
 <header>
-	<div class="navbar-header">
-	    <a class="navbar-brand" rel="home" href="/" title="Jangbogo-Cooksmart">
-	        <img class="img-responsive" style="width:40px; height;40px; margin-top: -5px;" src="/static/images/mainlogo.png">
-	    </a>
-	    
-  	</div>
 	<div class="container-fluid">
 		<div class="row">
-			<div class="col-xs-6 col-md-4"><h2 align="center" style="width=300px"> Jangbogo - Cooksmart</h2></div>		
-			<div class="dropdown" align="right" style="margin-right:10px">
-			  <button class="btn btn-default dropdown-toggle" style="margin-top:10px" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-			    Dropdown
-			    <span class="caret"></span>
-			  </button>
-			  <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
-			    <li><a href="#">Action</a></li>
-			    <li><a href="#">Another action</a></li>
-			    <li><a href="#">Something else here</a></li>
-			    <li role="separator" class="divider"></li>
-			    <li><a href="#">Separated link</a></li>
-			  </ul>
+			<div class="col-sm-1">
+				<div class="navbar-header">
+				    <a class="navbar-brand" rel="home" href="/dashboard" title="Jangbogo-Cooksmart">
+				        <img class="img-responsive" style="width:40px; height;40px; margin-top: -5px;" src="/static/images/mainlogo.png">
+				    </a>
+				    
+  				</div>
+			</div>
+			<div class="col-sm-7" >
+				<h3 style="padding-top=50px"> Jangbogo - Cooksmart SoftDes Final Project </h3>
+			</div>
+			<div class="col-sm-3">
+				<form method=post action="/search">
+				<div class="input-group" style="margin-top:10px">
+			        <input name = "searchquery" type="text" class="form-control" placeholder="Search for...">
+			        <span class="input-group-btn">
+			          	<button class="btn btn-default" type="submit" id ="search">CookSmart!</button>
+		      	  	</span>
+		        </div><!-- /input-group -->
+		        </form>
+		    </div>
+
+		    <div class="col-sm-1">
+				<div class="dropdown" align="right" style="margin-right:10px">
+			  		<button class="btn btn-default dropdown-toggle" style="margin-top:10px" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					    {{ user_name }}
+					    <span class="caret"></span>
+			  		</button>
+				  	<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+				    	<li><a href="#">Dashboard</a></li>
+				    	<li><a href="#">Edit Dashboard</a></li>
+				    	<li role="separator" class="divider"></li>
+				    	<li><a href="#">Account Setting</a></li>, 
+				  	</ul>
+				</div>
 			</div>
 		</div>
 	</div>
 </header>
 
 <body>
-	<div class="container-fluid" align="center" style="min-height:100%">
+	<div class="container-fluid" style="min-height:100%">
 		{% block body %}{% endblock %}
 	</div>
 </body>

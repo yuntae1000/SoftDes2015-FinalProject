@@ -1,0 +1,56 @@
+{% extends "header.html" %}
+
+{% block body %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/computecost.js') }}"></script>
+<div id ="aaa"> 
+<h3> {{ selectedresult }} / {{ nofserving }} </h3>
+</div>
+
+<div class="row" style = "margin-top:20px">
+    <div class = "col-sm-5">
+      <h4 style="margin-right:60px" align="center"> list of ingredients </h4> 
+          <div class="panel panel-default">
+			  <!-- Table -->
+			  <table class="table">
+			    <tr>
+			    	<td> Ingredients </td>
+			    	<td> Amount </td>
+			    	<td> Price </td>
+			    </tr>
+			    <tr>
+			    	<td>a</td>
+			    	<td>b</td>
+			    	<td>c</td>
+			    </tr>
+			  </table>
+		</div>
+		<h4 align="right"> Total Cost: $ 50 </h4>
+    </div>
+    <div class ="col-sm-1">
+    </div>
+    <div class = "col-sm-5">
+      <h4 style="margin-right:60px" align="center"> Stores Near By </h4> 
+          <div class="panel panel-default">
+			  <!-- Table -->
+			  <table class="table">
+			    <tr>
+			    	<td> Store Name </td>
+			    	<td> Distance </td>
+			    	<td> Travel Time (Car) </td>
+			    </tr>
+			    <tr>
+			    	<td>a</td>
+			    	<td>b</td>
+			    	<td>c</td>
+			    </tr>
+			  </table>
+		</div>
+    </div>
+</div>
+
+<div class="row" style = "margin-top:20px">
+
+</div>
+
+
+{% endblock %}
