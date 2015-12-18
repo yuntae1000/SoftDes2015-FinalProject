@@ -57,9 +57,9 @@ def iherb_search(ingredient):
         x.append(name.lower()) # name
         b = amount.split(' ')
         
-        x.append(b[1]) # amount
+        x.append(float(b[1])) # amount
         x.append(b[2].lower()) # unit
-        x.append(ing_list[2*i+1].lower()) # price
+        x.append(ing_list[2*i+1]) # price
         x.append('iherb')
         ingredient_list.append(x)
 
@@ -116,9 +116,9 @@ def walmart_search(ingredient):
 
         b = a[1].split(' ')
 
-        x.append(b[1].lower()) # amount
+        x.append(float(b[1])) # amount
         x.append(b[2].lower()) # unit
-        x.append(walmart[2*i+1].lower()) # price
+        x.append(walmart[2*i+1]) # price
         x.append('walmart')
         ingredient_list.append(x)
 
@@ -157,7 +157,8 @@ def produce_search(ingredient):
         if '-' in produce_1[2*i]:
             a = produce_1[2*i].find('-')
             produce_1[2*i] = produce_1[2*i][:a]
-        produce_1[2*i+1] = '$'+produce_1[2*i+1]
+            produce_1[2*i+1] = '$'+produce_1[2*i+1]
+        
 
     ing_list = []
 
@@ -167,21 +168,21 @@ def produce_search(ingredient):
         if 'per pound' in produce_1[2*i+1]:
             a = produce_1[2*i+1].find('per pound')
             x.append(b)
-            x.append('1')
+            x.append(1)
             x.append('pound')
             x.append(produce_1[2*i+1][:a-1])
             ing_list.append(x)
         elif 'per bunch' in produce_1[2*i+1]:
             a = produce_1[2*i+1].find('per bunch')
             x.append(b)
-            x.append('1')
+            x.append(1)
             x.append('bunch')
             x.append(produce_1[2*i+1][:a-1])
             ing_list.append(x)
         elif 'each' in produce_1[2*i+1]:
             a = produce_1[2*i+1].find('each')
             x.append(b)
-            x.append('1')
+            x.append(1)
             x.append('each')
             x.append(produce_1[2*i+1][:a-1])
             ing_list.append(x)
@@ -222,13 +223,13 @@ def unify_units(ingredient_list):
         for j in range(len(unit)):
             if 'fl' in ingredient_list[i][2]:
                 ingredient_list[i][2] = 'oz'
-            elif 'fl oz' in ingredient_list[i][1]:
+            elif 'fl oz' in str(ingredient_list[i][1]):
                 a = ingredient_list[i][1].find('fl oz')
                 b = ingredient_list[i][1][:a-1]+'oz'
                 c = b.replace(' ','')
                 ingredient_list[i][1] = c
             elif unit[j] in ingredient_list[i][2]:
-                ingredient_list[i][1] = str(float(ingredient_list[i][1])*float(unify[j]))
+                ingredient_list[i][1] = float(ingredient_list[i][1])*float(unify[j])
                 ingredient_list[i][2] = 'oz'
   
     return ingredient_list

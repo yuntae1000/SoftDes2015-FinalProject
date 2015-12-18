@@ -150,6 +150,13 @@ class parse:
 			servings = servings[8:]
 			servings = servings.strip(string.punctuation)
 			return float(servings)
+		if url[11] == 'c':
+			html = urllib2.urlopen(url).read()
+			text = plaintext(html).encode('utf-8')
+			a = text.split('Servings:')
+			return float(a[1][1:2])
+
+
 
 class ready_for_cost():
 	def __init__(self):
