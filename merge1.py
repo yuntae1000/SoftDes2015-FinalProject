@@ -11,7 +11,20 @@ socket.timeout
 
 class food2fork:
 
+<<<<<<< HEAD
 	def __init__(self,searchdish):
+=======
+API= "330d2c5996a36203ad2247c1e705b4bb"
+#User Input the Value
+searchdish = "steak"
+
+response = urllib2.urlopen('http://food2fork.com/api/search?key='+API+'&q='+searchdish).read()
+jsondata=json.loads(response)
+websites=[u'Closet Cooking',u'All Recipes',u'Epicurious', u'Bon Appetit']
+recipe_lists=[]
+f2furl_ingredients=[]
+ingredients_lists=[]
+>>>>>>> 342b0575713989ef2f52ef748c6410aba6450f06
 
 		self.API= "330d2c5996a36203ad2247c1e705b4bb"
 		#User Input the Value
