@@ -1,32 +1,39 @@
 #!/usr/bin/python
 import MySQLdb
 import sys
-sys.path.insert(0,'/home/yoontae/Desktop/SoftDes2015-FinalProject')
+sys.path.insert(0,'/home/jong/Desktop/SoftDes2015-FinalProject/cooksmart_flask/FlaskApp/')
 #import merge1
 import soeun
 #import mysql.connector
 import find_stores
 
-stores=find_stores.store
-indb_num=[]
-cache_data=[]
-store_inventory=[]
-names = soeun.refine_name(soeun.name_list)
-amounts = soeun.unify_recipe_unit(soeun.amount_list, soeun.unit_list)[0]
-units = soeun.unify_recipe_unit(soeun.amount_list, soeun.unit_list)[1]
+def config(name_list,unit_list,amount_list):
+	global indb_num
+	global cache_data
+	global store_inventory
+	global names
+	global amounts
+	global units
+	indb_num=[]
+	cache_data=[]
+	store_inventory=[]
+	names = soeun.refine_name(name_list)
+	amounts = soeun.unify_recipe_unit(amount_list, unit_list)[0]
+	units = soeun.unify_recipe_unit(amount_list, unit_list)[1]
 
-db = MySQLdb.connect(host="localhost",    # your host, usually localhost
-                     user="root",         # your username
-                     passwd="cooksmart",  # your password
-                     db="cooksmart")        # name of the data base
+	db = MySQLdb.connect(host="localhost",    # your host, usually localhost
+	                     user="root",         # your username
+	                     passwd="cooksmart",  # your password
+	                     db="cooksmart")        # name of the data base
 
-# you must create a Cursor object. It will let
-#  you execute all the queries you need
-cur = db.cursor()
+	# you must create a Cursor object. It will let
+	#  you execute all the queries you need
+	global cur
+	cur = db.cursor()
 
-#check name number which is included in the cache 
+	#check name number which is included in the cache 
 
-#waldb_num=names
+	#waldb_num=names
 
 def checkexist():
 	for i in range(len(names)):
@@ -44,7 +51,7 @@ def checkexist():
 	print indb_num
 
 def find_cache_data():
-	checkexist
+	checkexist()
 	for j in indb_num:
 		name=names[j]
 		
@@ -54,21 +61,17 @@ def find_cache_data():
 		for row in cur.fetchall():
 			print row
 			cache_data.append(row)
-	print cache_data
 
-	#
 	for index in sorted(indb_num, reverse=True):
 		# remove the data which is in the database
 		del names[index]
 		del amounts[index]
 		del units[index]
-	##pass data that is not in the cache
-	print names
-	print amounts
-	print units
+	return cache_data
 
 ## search local DB and look for proper local shops
-def find_local_data():
+def find_local_data(storedic):
+	stores=storedic.key()
 	for store in stores:
 		
 		#num_inventory
@@ -87,8 +90,4 @@ def find_local_data():
 		for row in cur.fetchall():
 			#print row
 			store_inventory.append(row[3])
-			
-			
-find_local_data()
-print store_inventory
-		
+		return store_inventory

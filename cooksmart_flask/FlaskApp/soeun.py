@@ -56,9 +56,13 @@ def iherb_search(ingredient):
             name += a[j]
         x.append(name.lower()) # name
         b = amount.split(' ')
-        
-        x.append(float(b[1])) # amount
-        x.append(b[2].lower()) # unit
+        b1=b[1].split('-')
+        if b1 == b:
+            x.append(float(b[1])) # amount
+            x.append(b[2].lower()) # unit
+        else:
+            x.append(float(b1[0])) # amount
+            x.append(b[2].lower()) # unit
         x.append(ing_list[2*i+1]) # price
         x.append('iherb')
         ingredient_list.append(x)
@@ -113,8 +117,10 @@ def walmart_search(ingredient):
         a = walmart[2*i].split(',')
         x.append(a[0].lower()) # name 
         
-
-        b = a[1].split(' ')
+        try:
+            b = a[1].split(' ')
+        except IndexError:
+            b = a[0].split(' ')
 
         x.append(float(b[1])) # amount
         x.append(b[2].lower()) # unit
@@ -424,13 +430,11 @@ def main(name_list, amount_list, unit_list):
 
     return final
 
-amount_list = [0.16666666666666666, 0.08333333333333333, 0.25, 0.16666666666666666, 0.3333333333333333, 0.3333333333333333, 0.08333333333333333, 0.16666666666666666, 0.3333333333333333]
-unit_list = ['cup', 'cup', 'teaspoon', 'cup', 'teaspoon', 'cup', 'cup', 'cup', 'teaspoon']
-name_list = ['coffee ', 'margarine, melted ', 'ground nutmeg ', 'milk ', 'baking powder ', 'all-purpose flour ', 'margarine, melted ', 'white sugar ', 'ground cinnamon ']
+# amount_list = [0.16666666666666666, 0.08333333333333333, 0.25, 0.16666666666666666, 0.3333333333333333, 0.3333333333333333, 0.08333333333333333, 0.16666666666666666, 0.3333333333333333]
+# unit_list = ['cup', 'cup', 'teaspoon', 'cup', 'teaspoon', 'cup', 'cup', 'cup', 'teaspoon']
+# name_list = ['coffee ', 'margarine, melted ', 'ground nutmeg ', 'milk ', 'baking powder ', 'all-purpose flour ', 'margarine, melted ', 'white sugar ', 'ground cinnamon ']
 
-#name_list = ['white sugar','black pepper','egg','bread']
-#amount_list = [1,5,2,1]
-#unit_list = ['cup','lb','oz','loaf']
-#print main(name_list, amount_list, unit_list)
+
+# print main(name_list, amount_list, unit_list)
 
 #things to do => refine produce information / mark amount

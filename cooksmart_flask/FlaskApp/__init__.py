@@ -1,10 +1,11 @@
-from flask import Flask, render_template, json, request
+from flask import Flask, render_template, json, request, redirect, url_for
 from flaskext.mysql import MySQL
 import operator
 from werkzeug import generate_password_hash, check_password_hash
 from merge1 import *
 from find_stores import *
-from soeun import main
+import cache_from_db
+import InsertDB 
 
 
 
@@ -49,8 +50,8 @@ def signUp():
             
             conn = mysql.connect()
             cursor = conn.cursor()
-            _hashed_password = generate_password_hash(_password)
-            cursor.callproc('sp_createUser',(_name,_email,_hashed_password))
+            # _hashed_password = generate_password_hash(_password)
+            cursor.callproc('sp_createUser',(_name,_email,_password))
             data = cursor.fetchall()
 
             if len(data) is 0:
@@ -69,15 +70,15 @@ def signUp():
 
 @app.route("/Authenticate",methods=['POST','GET'])
 def Authenticate():
-    username = request.form('username')
-    password = request.form('password')
+    username = request.form['username']
+    password = request.form['password']
     cursor = mysql.connect().cursor()
-    cursor.execute("SELECT * from tbl_user where username='" + username + "' and password='" + password + "'")
+    cursor.execute("SELECT * from tbl_user where user_username='" + username + "' and user_password='" + password + "'")
     data = cursor.fetchone()
     if data is None:
      return "Username or Password is wrong"
     else:
-     return render_template("example.html")
+     return redirect(url_for('dashboard'))
 
 
 @app.route('/search',methods=['POST','GET'])
@@ -93,7 +94,8 @@ def searchresult():
         Parse = parse()
         recipe= Parse.recipe(url)
         dishname = Parse.dishname(url)
-        SEARCH_DICT=[{"dishname":dishname,"url":url,"recipe":recipe,"ingre":final_ingre},{"dishname":dishname,"url":url,"recipe":recipe,"ingre":final_ingre},{"dishname":dishname,"url":url,"recipe":recipe,"ingre":final_ingre},{"dishname":dishname,"url":url,"recipe":recipe,"ingre":final_ingre},{"dishname":dishname,"url":url,"recipe":recipe,"ingre":final_ingre},{"dishname":dishname,"url":url,"recipe":recipe,"ingre":final_ingre}]
+        servings = Parse.servings(url)
+        SEARCH_DICT=[{"dishname":dishname,"url":url,"recipe":recipe,"ingre":final_ingre,"servings":servings},{"dishname":dishname,"url":url,"recipe":recipe,"ingre":final_ingre,"servings":servings},{"dishname":dishname,"url":url,"recipe":recipe,"ingre":final_ingre,"servings":servings},{"dishname":dishname,"url":url,"recipe":recipe,"ingre":final_ingre,"servings":servings},{"dishname":dishname,"url":url,"recipe":recipe,"ingre":final_ingre,"servings":servings},{"dishname":dishname,"url":url,"recipe":recipe,"ingre":final_ingre,"servings":servings}]
         global sdict
         sdict=SEARCH_DICT
     except IndexError:
@@ -104,22 +106,31 @@ def searchresult():
 def computecost():
     nofserving = request.form['nofserving']
     selectedresult = request.form['selectedresult']
-    findstore=find_stores()
-    findstore.get_location('Olin way, Boston, MA')
-    findstore.search_stores(1800)
-    STORE_DICT = findstore.near_you()
-    STORE_LIST = sorted(STORE_DICT.items(),key=operator.itemgetter(1))
+    selectedresult=str(selectedresult)
+    selectedresult=int(selectedresult)
+    # findstore=find_stores()
+    # findstore.get_location('Olin way, Boston, MA')
+    # findstore.search_stores(1800)
+    # STORE_DICT = findstore.near_you()
+    # STORE_LIST = sorted(STORE_DICT.items(),key=operator.itemgetter(1))
 
 
     costcnvt=ready_for_cost()
-    final_ingre=sdict[selectedresult]["ingre"]
-    list_amount = costcnvt.amount(final_ingre)
+    final_ingre=sdict[1]["ingre"]
+    n_people=sdict[1]["servings"]
+    m_people=int(nofserving)
+    list_amount = costcnvt.amount(final_ingre,m_people,n_people)
     list_unit = costcnvt.unit(final_ingre)
     list_name = costcnvt.name(final_ingre)
+    dishname = sdict[1]["dishname"]
+    amount_list = [0.16666666666666666, 0.08333333333333333, 0.25, 0.16666666666666666, 0.3333333333333333, 0.3333333333333333, 0.08333333333333333, 0.16666666666666666, 0.3333333333333333]
+    unit_list = ['cup', 'cup', 'teaspoon', 'cup', 'teaspoon', 'cup', 'cup', 'cup', 'teaspoon']
+    name_list = ['coffee ', 'margarine, melted ', 'ground nutmeg ', 'milk ', 'baking powder ', 'all-purpose flour ', 'margarine, melted ', 'white sugar ', 'ground cinnamon ']
+    cache_from_db.config(name_list,unit_list,amount_list)
+    list_grocery = cache_from_db.find_cache_data()
+    list_grocery.extend(InsertDB.searchnotindb(cache_from_db.names,cache_from_db.amounts,cache_from_db.units))
 
-
-
-    return render_template("computecost.html", USER_DICT=USER_DICT,nofserving=nofserving,selectedresult=selectedresult,STORE_LIST=STORE_LIST)
+    return render_template("computecost.html", dishname=dishname, nofserving=nofserving,selectedresult=selectedresult,list_grocery=list_grocery)
 
 @app.route('/computecost2/',methods=['POST','GET'])
 def computecost2():

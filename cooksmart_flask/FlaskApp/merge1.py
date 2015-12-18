@@ -198,7 +198,7 @@ class ready_for_cost():
 		return fakelist
 
 	#Make the amount(float) list
-	def amount(self, ing_str):
+	def amount(self, ing_str,m_people,n_people):
 		fakelist = self.make_fakelist(ing_str)
 		amount_list = []
 		numberset = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
@@ -208,8 +208,11 @@ class ready_for_cost():
 					if fakelist[i+1][0] == numberset[j]:
 						amount_list.append(fakelist[i+1])
 		for i in range(len(amount_list)):
-			if '/' in amount_list[i]:
-				position = amount_list[i].index('/')
+			if '/' in amount_list[i] or '-' in amount_list[i]:
+				if '/' in amount_list[i]:
+					position = amount_list[i].index('/')
+				elif '-' in amount_list[i]:
+					position = amount_list[i].index('-')
 				numerator = float(amount_list[i][:position])
 				denominator = float(amount_list[i][position+1:])
 				amount_list[i] = numerator/denominator*m_people/n_people

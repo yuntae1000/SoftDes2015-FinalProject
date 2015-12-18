@@ -4,7 +4,7 @@ import string
 
 class find_stores():
 	def __init__(self):
-		self.my_key = 'AIzaSyDJm9wnT8bVC1nxJ61OKwcMdkwDpxakcWg'
+		self.my_key = 'AIzaSyCzOX8kaUm8AlRZHJbq_LlESqqXY9t2mQs'
 		self.datalist2=[]
 		pass
 
@@ -58,10 +58,4 @@ class find_stores():
 			datalist[name_list[i]] = response3[i]['distance']['text'], response3[i]['duration']['text']
 		return datalist
 
-a = find_stores('AIzaSyDJm9wnT8bVC1nxJ61OKwcMdkwDpxakcWg')
-b = a.get_location('Olin way, Boston, MA')
-c = a.search_stores(1800)
-d = a.near_you()
-
-store=c.keys()
-
+#'AIzaSyDJm9wnT8bVC1nxJ61OKwcMdkwDpxakcWg'

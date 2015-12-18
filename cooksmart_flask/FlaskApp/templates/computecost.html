@@ -2,12 +2,12 @@
 
 {% block body %}
 <div id ="aaa"> 
-<h3> {{ selectedresult }} / {{ nofserving }} </h3>
+<h3> {{ dishname }} / Number of Servings {{ nofserving }} </h3>
 </div>
 
 <div class="row" style = "margin-top:20px">
     <div class = "col-sm-5">
-      <h4 style="margin-right:60px" align="center"> list of ingredients </h4> 
+      <h4 style="margin-right:60px" align="center"> list of ingredients </h4>
           <div class="panel panel-default">
 			  <!-- Table -->
 			  <table class="table">
@@ -16,11 +16,13 @@
 			    	<td> Amount </td>
 			    	<td> Price </td>
 			    </tr>
+			    {% for items in list_grocery %}
 			    <tr>
-			    	<td>a</td>
-			    	<td>b</td>
-			    	<td>c</td>
+			    	<td>{{items[0]}}</td>
+			    	<td>{{items[1]}} {{items[2]}}</td>
+			    	<td>{{items[3]}}</td>
 			    </tr>
+			    {% endfor %}
 			  </table>
 		</div>
 		<h4 align="right"> Total Cost: $ 50 </h4>
@@ -37,13 +39,13 @@
 			    	<td> Distance </td>
 			    	<td> Travel Time (Car) </td>
 			    </tr>
-			    {% for store in STORE_LIST %}
+			    <!-- {% for store in STORE_LIST %}
 			    <tr>
 			    	<td>{{store[0]}}</td>
 			    	<td>{{store[1][0]}}</td>
 			    	<td>{{store[1][1]}}</td>
 			    </tr>
-			    {% endfor %}
+			    {% endfor %} -->
 			  </table>
 		</div>
     </div>
