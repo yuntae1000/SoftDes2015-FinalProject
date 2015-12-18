@@ -71,7 +71,7 @@ def find_cache_data():
 
 ## search local DB and look for proper local shops
 def find_local_data(storedic):
-	stores=storedic.key()
+	stores=storedic.keys()
 	for store in stores:
 		
 		#num_inventory

@@ -2,7 +2,7 @@ $(function() {
     $('#computecost').click(function() {
         $.ajax({
             url: '/computecost',
-            data: "{'nofserving': $('#nofserving').val(),'selectedresult':$('#selectedresult').val()}"
+            data: "{'nofserving': $('#nofserving').val()}"
             type: 'POST',
             success: function(response) {
                 console.log(response);

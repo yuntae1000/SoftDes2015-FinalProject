@@ -9,10 +9,8 @@ import InsertDB
 
 
 
-USER_DICT = {"Basics":[["Introduction to Python","/introduction-to-python-programming/"],
-                            ["Print functions and Strings","/python-tutorial-print-function-strings/"],
-                            ["Math basics with Python 3","/math-basics-python-3-beginner-tutorial/"]],
-                  "Web Dev":[]}
+USER_DICT = {"ingredients":["salt","eggs","scallions","onions","bread","ice cream"],
+                  "history":["coffee","ice cream","sandwich","olin"]}
 user_name = "Amon"
 
 mysql = MySQL()
@@ -105,16 +103,6 @@ def searchresult():
 @app.route('/computecost',methods=['POST','GET'])
 def computecost():
     nofserving = request.form['nofserving']
-    selectedresult = request.form['selectedresult']
-    selectedresult=str(selectedresult)
-    selectedresult=int(selectedresult)
-    # findstore=find_stores()
-    # findstore.get_location('Olin way, Boston, MA')
-    # findstore.search_stores(1800)
-    # STORE_DICT = findstore.near_you()
-    # STORE_LIST = sorted(STORE_DICT.items(),key=operator.itemgetter(1))
-
-
     costcnvt=ready_for_cost()
     final_ingre=sdict[1]["ingre"]
     n_people=sdict[1]["servings"]
@@ -130,13 +118,14 @@ def computecost():
     list_grocery = cache_from_db.find_cache_data()
     list_grocery.extend(InsertDB.searchnotindb(cache_from_db.names,cache_from_db.amounts,cache_from_db.units))
 
-    return render_template("computecost.html", dishname=dishname, nofserving=nofserving,selectedresult=selectedresult,list_grocery=list_grocery)
 
-@app.route('/computecost2/',methods=['POST','GET'])
-def computecost2():
-    nofserving=1
-    selectedresult="aaa"
-    return render_template("computecost.html", USER_DICT=USER_DICT,nofserving=nofserving,selectedresult=selectedresult)
+    findstore=find_stores()
+    findstore.get_location('Olin way, Boston, MA')
+    findstore.search_stores(1800)
+    STORE_DICT = findstore.near_you()
+    STORE_LIST = sorted(STORE_DICT.items(),key=operator.itemgetter(1))
+
+    return render_template("computecost.html", dishname=dishname, nofserving=nofserving,list_grocery=list_grocery,user_name=user_name,STORE_LIST=STORE_LIST)
 
 
 if __name__ == "__main__":

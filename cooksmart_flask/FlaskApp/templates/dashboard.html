@@ -9,8 +9,8 @@
       <h4 style="margin-right:60px" align="center"> list of ingredients </h4> 
           <div class="list-group">
             <a class="list-group-item active">Ingredients you Already Have</a>
-              {% for t in USER_DICT["Basics"] %}
-                <a href="{{t[1]}}" class="list-group-item">{{t[0]}}</a>
+              {% for t in USER_DICT["ingredients"] %}
+                <a href="#" class="list-group-item">{{t}}</a>
               {% endfor %}
               <!-- <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
               <a href="#" class="list-group-item">Morbi leo risus</a>
@@ -23,8 +23,8 @@
       <h4 style="margin-left:60px"> search history </h4>
           <div class="list-group">
             <a class="list-group-item list-group-item-success">Recipes You Searched Before</a>
-              {% for t in USER_DICT["Basics"] %}
-                <a href="{{t[1]}}" class="list-group-item">{{t[0]}}</a>
+              {% for t in USER_DICT["history"] %}
+                <a href="#" class="list-group-item">{{t}}</a>
               {% endfor %}
             </div>
     </div>
