@@ -214,8 +214,8 @@ def unify_units(ingredient_list):
     output = [ [ingredient, unified_amount, unified_unit, price] * 3 ]
     """
 
-    unit = ['cup','tablespoon','teaspoon','pound','lb','g','gram']
-    unify = [80, 0.5, 0.25, 16, 16, 0.035, 0.035]
+    unit = ['oz','ounce','cup','tablespoon','teaspoon','pound','lb','g','gram']
+    unify = [1, 1, 80, 0.5, 0.25, 16, 16, 0.035, 0.035]
 
 
     for i in range(len(ingredient_list)):
@@ -243,8 +243,8 @@ def unify_recipe_unit(recipe_amount, recipe_unit):
     output = [ [unified_amount1, unified_amount2,...],[unified_unit1, unified_unit2, ...] ]
     """
 
-    unit = ['oz','ounce''cup','tablespoon','teaspoon','pound','lb']
-    unify = [1, 1, 80, 0.5, 0.25, 16, 16, 0.03, 0.03]
+    unit = ['oz','ounce','cup','tablespoon','teaspoon','pound','lb','g','gram']
+    unify = [1, 1, 80, 0.5, 0.25, 16, 16, 0.035, 0.035]
     for i in range(len(recipe_unit)):
         for j in range(len(unit)):
             if unit[j] in recipe_unit[i]:
@@ -267,33 +267,68 @@ def compare_amount(ingredient_list, recipe_amount, recipe_unit):
     a = [ingredient_list[0][3][1:],ingredient_list[1][3][1:],ingredient_list[2][3][1:]]
     
     a.sort()
+
+    
+
     c = []
     for j in range(3):
         for i in range(3):
             if ingredient_list[i][3][1:]==a[j]:
                 c.append(i)
     
+
     if recipe_unit == 'oz' and ingredient_list[c[0]][2] == 'oz':
         if recipe_amount < ingredient_list[c[0]][1] :
+            ingredient_list[c[0]].append(1)
             return ingredient_list[c[0]]
         elif ingredient_list[c[1]][3] == 'n stores only':
+            x = float(recipe_amount) / float(ingredient_list[c[0]][1])
+            if float(recipe_amount)%float(ingredient_list[c[0]][1]) == 0:
+                ingredient_list[c[0]].append(int(x))
+            else:
+                ingredient_list[c[0]].append(int(x)+1)
             return ingredient_list[c[0]]
         elif recipe_amount < ingredient_list[c[1]][1] and ingredient_list[c[1]][1] < recipe_amount*2 :
+            ingredient_list[c[1]].append(1)
             return ingredient_list[c[1]]
         elif ingredient_list[c[2]][3] == 'n stores only':
+            x = float(recipe_amount) / float(ingredient_list[c[1]][1])
+            if float(recipe_amount)%float(ingredient_list[c[1]][1]) == 0:
+                ingredient_list[c[1]].append(int(x))
+            else:
+                ingredient_list[c[1]].append(int(x)+1)
             return ingredient_list[c[1]]
         elif recipe_amount < ingredient_list[c[2]][1] and ingredient_list[c[2]][1] < recipe_amount*2 :
+            ingredient_list[c[2]].append(1)
             return ingredient_list[c[2]]
         elif recipe_amount < ingredient_list[c[2]][1] and ingredient_list[c[2]][1] > recipe_amount*2 :
+            x = float(recipe_amount) / float(ingredient_list[c[1]][1])
+            if float(recipe_amount)%float(ingredient_list[c[1]][1]) == 0:
+                ingredient_list[c[1]].append(int(x))
+            else:
+                ingredient_list[c[1]].append(int(x)+1)
             return ingredient_list[c[1]]
         elif recipe_amount > ingredient_list[c[2]][1] :
+            x = float(recipe_amount) / float(ingredient_list[c[2]][1])
+            if float(recipe_amount)%float(ingredient_list[c[2]][1]) == 0:
+                ingredient_list[c[2]].append(int(x))
+            else:
+                ingredient_list[c[2]].append(int(x)+1)
             return ingredient_list[c[2]]
         else:
-            ingredient_list[c[0]].append('mark')
+            x = float(recipe_amount) / float(ingredient_list[c[0]][1])
+            if float(recipe_amount)%float(ingredient_list[c[0]][1]) == 0:
+                ingredient_list[c[0]].append(int(x))
+            else:
+                ingredient_list[c[0]].append(int(x)+1)
             return ingredient_list[c[0]] # mark the number
 
     else:
-        ingredient_list[c[0]].append('mark')
+        x = float(recipe_amount) / float(ingredient_list[c[0]][1])
+        if float(recipe_amount)%float(ingredient_list[c[0]][1]) == 0:
+            ingredient_list[c[0]].append(int(x))
+        else:
+            ingredient_list[c[0]].append(int(x)+1)
         return ingredient_list[c[0]] # mark the number
         
 
@@ -324,16 +359,16 @@ def ingredients_search(ingredient):
         return walmart
     elif walmart_prices[2] == 'n stores only' and walmart_prices[1] != 'n stores only':
         return walmart
+    elif walmart_prices[2] == 'n stores only' and walmart_prices[1] == 'n stores only' and walmart_prices[0] != 'n stores only':
+        return walmart
 
 
     iherb = iherb_search(ingredient)
     iherb_prices = [iherb[0][3][1:],iherb[1][3][1:],iherb[2][3][1:]]
 
+    return iherb
 
-    if min(walmart_prices[0],iherb_prices[0],iherb_prices[1],iherb_prices[2]) in walmart_prices :
-        return walmart
-    elif min(walmart_prices[0],iherb_prices[0],iherb_prices[1],iherb_prices[2]) in iherb_prices :
-        return iherb
+
 
 
 
@@ -390,7 +425,7 @@ def main(name_list, amount_list, unit_list):
 
 amount_list = [0.16666666666666666, 0.08333333333333333, 0.25, 0.16666666666666666, 0.3333333333333333, 0.3333333333333333, 0.08333333333333333, 0.16666666666666666, 0.3333333333333333]
 unit_list = ['cup', 'cup', 'teaspoon', 'cup', 'teaspoon', 'cup', 'cup', 'cup', 'teaspoon']
-name_list = ['white sugar ', 'margarine, melted ', 'ground nutmeg ', 'milk ', 'baking powder ', 'all-purpose flour ', 'margarine, melted ', 'white sugar ', 'ground cinnamon ']
+name_list = ['coffee ', 'margarine, melted ', 'ground nutmeg ', 'milk ', 'baking powder ', 'all-purpose flour ', 'margarine, melted ', 'white sugar ', 'ground cinnamon ']
 
 #name_list = ['white sugar','black pepper','egg','bread']
 #amount_list = [1,5,2,1]
