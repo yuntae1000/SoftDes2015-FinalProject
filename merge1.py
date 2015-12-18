@@ -12,7 +12,7 @@ socket.timeout
 
 API= "330d2c5996a36203ad2247c1e705b4bb"
 #User Input the Value
-searchdish = "donut"
+searchdish = "steak"
 
 response = urllib2.urlopen('http://food2fork.com/api/search?key='+API+'&q='+searchdish).read()
 jsondata=json.loads(response)

@@ -64,6 +64,10 @@ b = a.get_location('Olin way, Boston, MA')
 c = a.search_stores(1800)
 d = a.near_you()
 
-print a.datalist2
-print c
-print d
+# print a.datalist2
+# f=a.datalist2[0]
+# print f
+# print c
+# print d
+store=c.keys()
+
