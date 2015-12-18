@@ -60,10 +60,10 @@ def iherb_search(ingredient):
         x.append(b[1]) # amount
         x.append(b[2].lower()) # unit
         x.append(ing_list[2*i+1].lower()) # price
+        x.append('iherb')
         ingredient_list.append(x)
 
     return ingredient_list
-
 
 
 
@@ -119,6 +119,7 @@ def walmart_search(ingredient):
         x.append(b[1].lower()) # amount
         x.append(b[2].lower()) # unit
         x.append(walmart[2*i+1].lower()) # price
+        x.append('walmart')
         ingredient_list.append(x)
 
 
@@ -288,9 +289,11 @@ def compare_amount(ingredient_list, recipe_amount, recipe_unit):
         elif recipe_amount > ingredient_list[c[2]][1] :
             return ingredient_list[c[2]]
         else:
+            ingredient_list[c[0]].append('mark')
             return ingredient_list[c[0]] # mark the number
 
     else:
+        ingredient_list[c[0]].append('mark')
         return ingredient_list[c[0]] # mark the number
         
 
@@ -374,10 +377,12 @@ def main(name_list, amount_list, unit_list):
         item_list = unify_units(pre_item_list)
 
         if len(item_list) == 1:
+            item_list.append('catalog')
             final.append(item_list)
             
         if len(item_list) == 3:
             final_item = compare_amount(item_list,amount,unit)
+            final_item.append
             final.append(final_item)
             
 
