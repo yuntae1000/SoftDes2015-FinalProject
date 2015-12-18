@@ -19,8 +19,12 @@ def iherb_search(ingredient):
 
     a = iherb_text.split('Relevance Best Selling Customer Rating Price: Low to High Price: High to Low On Sale New Arrivals Heaviest Lightest')
     b = a[1].split('\n')
-    del b[:4]
+    if 'Previous' in b[2]:
+        del b[:4]
+    else:
+        del b[:2]
     
+
     c=[]
     
     for i in range(len(b)):
@@ -34,6 +38,8 @@ def iherb_search(ingredient):
     for i in range(len(c)):
         if i%3 == 0 or i%3 == 2:
             ing_list.append(c[i])
+
+    #print c
 
     # ing_list = [ 'name, amount, unit', 'price' ]
     
@@ -50,7 +56,7 @@ def iherb_search(ingredient):
             name += a[j]
         x.append(name.lower()) # name
         b = amount.split(' ')
-        print b
+        
         x.append(b[1]) # amount
         x.append(b[2].lower()) # unit
         x.append(ing_list[2*i+1].lower()) # price
@@ -79,13 +85,16 @@ def walmart_search(ingredient):
     a = walmart_text.split('Sort Best match Best sellers Price: low to high Price: high to low Highest rating New')
     b = a[1].split('\n')
     
+    
+    #print b
+    
 
     for i in range(len(b)):
         if b[i] == '':
             pass
         elif b[i][0] == '*':
             pass
-        elif '/' in b[i] or '(' in b[i]:
+        elif '/' in b[i] or 'rating' in b[i] or 'Rollback' in b[i] or 'Best Seller' in b[i]:
             pass
         elif b[i] == 'New':
             pass
@@ -104,6 +113,7 @@ def walmart_search(ingredient):
         a = walmart[2*i].split(',')
         x.append(a[0].lower()) # name 
         
+
         b = a[1].split(' ')
 
         x.append(b[1].lower()) # amount
@@ -300,19 +310,24 @@ def ingredients_search(ingredient):
         return produce
 
     walmart = walmart_search(ingredient)
-    iherb = iherb_search(ingredient)
+    
 
     walmart_prices = [walmart[0][3][1:],walmart[1][3][1:],walmart[2][3][1:]]
     walmart_prices.sort()
-    iherb_prices = [iherb[0][3][1:],iherb[1][3][1:],iherb[2][3][1:]]
     
-
+    
 
     if 'n stores only' not in walmart_prices:
         return walmart
     elif walmart_prices[2] == 'n stores only' and walmart_prices[1] != 'n stores only':
         return walmart
-    elif min(walmart_prices[0],iherb_prices[0],iherb_prices[1],iherb_prices[2]) in walmart_prices :
+
+
+    iherb = iherb_search(ingredient)
+    iherb_prices = [iherb[0][3][1:],iherb[1][3][1:],iherb[2][3][1:]]
+
+
+    if min(walmart_prices[0],iherb_prices[0],iherb_prices[1],iherb_prices[2]) in walmart_prices :
         return walmart
     elif min(walmart_prices[0],iherb_prices[0],iherb_prices[1],iherb_prices[2]) in iherb_prices :
         return iherb
