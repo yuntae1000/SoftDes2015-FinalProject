@@ -7,7 +7,7 @@ CREATE TABLE cache
   product           VARCHAR(255) NOT NULL,              
   amount         	FLOAT(8,2) NOT NULL,                
   unit				VARCHAR(20) NOT NULL,
-  price				FLOAT(8,2) NOT NULL, 
+  price				VARCHAR(20) NOT NULL, 
   brand				VARCHAR(20),
   set_num			int,
   PRIMARY KEY     (id)
