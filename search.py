@@ -40,6 +40,7 @@ def getIngredients(index):
 	#jsondata2=json.loads(response2)
 	#print jsondata2
 	#print json.loads(response2)
+	#^^when it is time, clean up some of your experimental code.
 
 
 getRecipeurl()

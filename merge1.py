@@ -91,6 +91,7 @@ class parse:
 		recipe = recipe[cutting_num1:cutting_num2]
 		recipe = [x for x in recipe if x != '']
 		recipe = [x for x in recipe if x != '*']
+		#^^consider using a logic 'or' above to collapse the twl lines into one statement. 
 		return recipe
 
 	def bonappetit(self, url):
@@ -120,6 +121,7 @@ class parse:
 		if url[11] == 'b':
 			recipe = self.bonappetit(url)
 		return recipe
+		#perhaps an 'else' should come into play in the function above?
 
 	def servings(self, url):
 		if url[11] == 'b':

@@ -34,6 +34,10 @@ class find_stores():
 			datalist[response2[i]['name']] = response2[i]['geometry']['location']['lat'], response2[i]['geometry']['location']['lng']
 		
         #ADD DB PART HERE- Extracting the Stores
+        #^^There are ways to start writing new functions and leaving them as placeholders
+        #you can define a funtion that you want to write (e.g., that accesses a DB)
+        #and then you can just have the command 'pass' in the body of the funtion.
+        #it woun't do anything and you return to write functional code later.
 
 		return datalist
 
@@ -62,3 +66,5 @@ c = a.search_stores(500)
 d = a.near_you()
 print c
 print d
+#for readability, consider using more descriptive variable names.
+#also consider putting the final lines under an if __name__ == '__main__':
